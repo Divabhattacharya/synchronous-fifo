@@ -167,7 +167,11 @@ module fifo_test #(
         int phases[6][3] = '{'{90, 10, 3000}, '{10, 90, 3000}, '{50, 50, 4000},
                              '{80, 80, 4000}, '{30, 30, 3000}, '{60, 40, 3000}};
         foreach (phases[p])
-            repeat (phases[p][2]) cycle(chance(phases[p][0]), chance(phases[p][1]));
+            repeat (phases[p][2]) begin
+                bit wr = chance(phases[p][0]);           // one draw per statement keeps
+                bit rd = chance(phases[p][1]);           // the random stream reproducible
+                cycle(wr, rd);
+            end
         while (model.size() > 0) cycle(0, 1);
     endtask
 
